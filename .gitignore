@@ -1,0 +1,30 @@
+# 依赖与构建产物（不上传）
+node_modules/
+packages/*/node_modules/
+orca-dsh-build/
+
+# 环境 / 密钥
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.crt
+netrc
+.id_*
+.ssh/
+credentials
+secrets*
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.log
+.npm/
+.yarn/
+.pnpm-store/
+
+# 临时补丁验证脚本
+_verify*.js
+_verify*.cjs
+_verify*.mjs
