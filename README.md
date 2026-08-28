@@ -14,6 +14,13 @@
 
 Verified on **macOS**: Orca `1.4.190`, DSH CLI `0.1.1-rc.2`, dsh-TUI `^0.9.x`.
 
+## Screenshot
+
+![DSH in Orca](assets/screenshot.png)
+
+<!-- Replace assets/screenshot.png with a real capture: the DSH entry in Orca's
+     agent picker + dsh-TUI running in a pane + the 🐋 DeepSeek Harness tab. -->
+
 ## Quick start
 
 ```bash
