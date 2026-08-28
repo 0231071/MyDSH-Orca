@@ -66,6 +66,36 @@ dsh plugin --profile dsh-tui add @deepseek-harness-tui/dsh-tui
 | **细粒度状态上报缺失** | 未接入 Orca 的 agent-hook 协议（如 codex-hook），DSH pane 状态退化为进程级（运行中/已退出） |
 | **TUI 版本独立** | dsh-TUI 是独立 npm 包，版本跟着走；记得同步 `dsh plugin ... add` 更新 |
 
+## Orca 升级后如何重新启用集成
+
+> 本补丁改的是官方 `app.asar`（含签名），**Orca 任何升级都会把它全部还原**。升级后 DSH 从选择器消失、页签逻辑回归，这是预期行为，不是故障。重新启用只需重打一次补丁：
+
+```bash
+# 0) 先确认当前 Orca 的实际路径（可能已换位置）
+APP="$(mdfind "kMDItemCFBundleIdentifier == 'com.stablyai.orca'")"; echo "$APP"
+
+# 1) 重打补丁（自动：退出 Orca → 备份 → 替换 → 更新哈希 → 重签名）
+ORCA_APP="$APP" ./orca-dsh-patch/patch.sh --install
+```
+
+**重打自动化程度：**
+
+| 层面 | 表现 |
+| --- | --- |
+| 共享 CJS 文件（`tui-agent-config`、`agent-title-core` 等） | 文件名跨版本稳定，自动命中 ✅ |
+| 带版本 hash 的 bundle（`store-`、`daemon-ready-identity-`、`agent-catalog-` 等） | 用**内容 probe** 定位，hash 变也能找到 ✅ |
+| 内部结构 / 锚点字符串 | 若 Orca 改了函数/字段/字符串，锚点失配 ⚠️ |
+
+**可能遇到的两种情况：**
+
+- **输出全绿** → 打好了，重启 Orca 即可。
+- **报 `ANCHOR x0` / `NO FILE` / `already-ok` 缺失** → 脚本**安全停止、不写盘**，不会打坏 app。这是"失败安全"设计：把报错贴给维护者，更新锚点后再跑（1.4.184→1.4.190 时就发生过一次，已改成正则/内容定位兼容）。
+- 如中途不放心：`./orca-dsh-patch/patch.sh --rollback` 可回到最近一次备份。
+
+**升级后最容易误判为"坏了"的一点：** 每次重打都会 ad-hoc 重签名，macOS 可能再次要求授予「屏幕录制 / 辅助功能 / 文件夹访问」等权限（取决于 dsh-TUI 用到的能力）。重新授权即可。
+
+**不受升级影响的部分：** DSH CLI、`dsh-tui` profile、`~/.dsh` 会话数据都在独立位置，Orca 升级不会动它们。
+
 ## 修复记录
 
 ### 2026-08-27 — 页签误显 "Gemini CLI" 而非 "DeepSeek Harness"（已修复）
