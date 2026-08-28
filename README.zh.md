@@ -1,5 +1,7 @@
 # Orca DSH 补丁 —— 把 DeepSeek Harness 注册为 Orca 内置 Agent
 
+> **English: [README.en.md](./README.en.md)** · 中文版
+
 > ⚠️ **第三方非官方集成**。本项目是一套用于给 **Stably Orca**（`com.stablyai.orca`）打补丁的脚本，让 Orca 的 Agent 选择器里出现 **DSH**，可一键在 pane 中启动 **dsh-TUI** 终端界面。**不包含、不重新分发 Orca 的专有源码**，仅在你本机安装时对 `app.asar` 做锚点注入。使用前请自行确认符合 Orca / DSH 的相关许可与使用条款。
 
 在 **macOS** 上验证通过：Orca `1.4.190`、DSH CLI `0.1.1-rc.2`、dsh-TUI `@deepseek-harness-tui/dsh-tui ^0.9.x`。
